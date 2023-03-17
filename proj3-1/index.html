@@ -1,7 +1,335 @@
+<!DOCTYPE html>
 <html>
-	<head>
-	</head>
-	<body>
-		Project 3-1 here
-	</body>
+    <head>
+        <title></title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="bear-note-unique-identifier" content="0F956889-7CA9-4EF1-ADA4-3EC2DB203954-465-0000539C8ED3F122">
+        <meta name="created" content="2023-03-12T00:58:16-0800"/>
+        <meta name="modified" content="2023-03-16T20:40:33-0700"/>
+        <meta name="tags" content=""/>
+        <meta name="last device" content="Shannon’s MacBook Pro"/>
+    </head>
+    <body>
+        <div class="note-wrapper">
+            <br>
+<div>
+	
+<h1 id="Project 3-1: PathTracer">Project 3-1: PathTracer </h1>
+<h3 id="CS 184: Computer Graphics and Imaging, Spring 2023">CS 184: Computer Graphics and Imaging, Spring 2023</h3>
+<h3 id="Shannon Bonet & Ace Chen">Shannon Bonet & Ace Chen</h3>
+<br>
+<h2 id="Overview">Overview </h2>
+<p>In this project, we implemented the components of a path tracing program, which allows us to render scenes with physical lighting and thus more realistic imaging results. </p>
+<br>
+<p>First, we generated rays by transforming image coordinates to camera to world space. We then checked for bounding box intersections that we eventually used while traversing a KD tree of geometric primitives to speed up rendering. Next, we computed the values of our rays by summing direct and indirect lighting to produce a global illumination effect. Finally, we added adaptive sampling to help eliminate noise. </p>
+<br>
+<p>I (shannon) have personally never taken a physics or linear algebra course, so completing this project really opened my eyes and made me curious about the underlying mechanisms of the physical world. Overall, this project was way too tedius for us but we learned so much along the way. </p>
+<br>
+<br>
+<h2 id="Ray Generation + Scene Intersection">Ray Generation + Primitive Intersection</h2>
+<br>
+<p><i>Walk through the ray generation and primitive intersection parts of the rendering pipeline</i></p>
+<br>
+<p>We were able to generate camera rays by transforming image coordinates to camera space, creating a ray, then transforming it into a ray in the world space. This is known as a ray tracing technique that appiles lighting to an object. Next, we want to check whether a ray intersects a surface. </p>
+<br>
+<p><i>Explain the triangle intersection algorithm you implemented in your own words.</i></p>
+<br>
+<p>For triangle intersection, we used the Moller Trumbore algorithm, which takes the 3 coordinates of the triangle and its barycentirc coordinates to tell us whether a ray hits any space inside the triangle. If the time of intersection occurs between a ray’s minimum and maximum times and its barycentric coordinates are valid, then we know an intersection exists. </p>
+<br>
+<p>For sphere intersection, we apply a similar logic but use the circle’s origin and radius to solve for time of intersection. </p>
+<br>
+<p><i>Show images with normal shading for a few small .dae files.</i></p>
+<div align="middle">
+	<table style="width:500px">
+		<div>
+			<img src="images/task1_coil.png" align="middle" width="500px" />
+			<figcaption>CBcoil.dae</figcaption>
+		</div>
+		<div>
+			<img src="images/task1_sph.png" align="middle" width="500px" />
+			<figcaption>CBspheres_lambertain.dae</figcaption>
+		</div>
+	</table>
+</div>
+<br>
+<h2 id="BVH Construction">BVH Construction </h2>
+<p><i>Walk through your BVH construction algorithm. Explain the heuristic you chose for picking the splitting point.</i></p>
+<br>
+<p>Rendering more complex scenes can take a very long time. So far, our implemention checks for rays against every object, even if the ray doesn’t intersect the object. We can speed up this process by implementing a bounding volume hiearchy which uses the tree data structure to speed up rendering. </p>
+<br>
+<p> We constructed our BVH by creating a bounding box for each node, and splitting the box using its centroid sum as suggested. We register whether a node is a leaf node if its list of primitives is less than or equal to the <code class='code-inline'>max_leaf_size</code>. If not, we partition our list of primitives using the centroid sum as the split value. We handle 3 cases for each of the x, y, or z axes we could be aligning on, and then select the new middle to the result of our partition. We ensures our list of primitives stays sorted from left to right in each in consecutive recursive call by setting this new middle as the new </p>
+<p>start for <code class='code-inline'>node-&gt;right</code>, and as usual for <code class='code-inline'>node-&gt;left</code>. </p>
+<br>
+<div align="middle">
+<table style="width:500px">
+	<div>
+		<img src="images/task2_splitcow1.png" align="middle" width="500px" />
+		<figcaption>After 1 split</figcaption>
+	</div>
+	<div>
+		<img src="images/task2_splitcow2.png" align="middle" width="500px" />
+		<figcaption>After 2 splits</figcaption>
+	</div>
+</table>
+</div>
+<br>
+<p><i>Show images with normal shading for a few large .dae files that you can only render with BVH acceleration.</i><p>
+<br>
+<div align="middle">
+	<table style="width:500px">
+		<div>
+			<img src="images/task2_cow.png" align="middle" width="500px" />
+			<figcaption>cow.dae</figcaption>
+		</div>
+		<div>
+			<img src="images/task2_sadman.png" align="middle" width="500px" />
+			<figcaption>maxplanck.dae</figcaption>
+		</div>
+	</table>
+</div>
+
+<h2 id="Direct Illumination">Direct Illumination </h2>
+<p><i>Walk through both implementations of the direct lighting function.</i></p>
+<br>
+<p>To implement direct lightning, we first implemented the diffuse <code class='code-inline'>BSDF</code> and zero bounce illumination. The diffuse  <code class='code-inline'>BSDF</code>  divides the albedo by a factor of PI, regardless of the incident or outgoing light directions. Zero bounce radiance simply returns the emissive spectrum of whatever  <code class='code-inline'>BSDF</code>  is associated with the intersection.</p>
+<br>
+<p>For uniform hemisphere sampling, we approximated the light arriving at an intersection point using a Monte Carlo estimator:</p>
+<ul><li>	For however many samples we need, we sample from <code class='code-inline'>hemisphereSampler</code> to generate an incoming ray direction. We convert it world space generate a new incoming ray from origin <code class='code-inline'>hit_p</code> (and set its <code class='code-inline'>min_t</code> to the epsilon constant). 
+</li><li>	Then, we check if that new ray intersects with a light source. If it does, we multiply the emission at the intersection by <code class='code-inline'>f(wi-&gt;wo)</code> and the cosine of the sample and add this value to our running light estimate, as shown in the reflection equation. 
+</li><li>	Finally, after all samples are added, we divide by the <code class='code-inline'>PDF</code>, average by num_samples, and return.
+</li></ul>
+<br>
+<p>For importance sampling, we also traverse each light in the scene: </p>
+<ul><li>	If it is point light source we sample once; otherwise, we sample <code class='code-inline'>ns_area_light</code> times. 
+</li><li>	Each time, we sample the light at <code class='code-inline'>hit_p</code> to generate <code class='code-inline'>wi</code> (direction between <code class='code-inline'>hit_p</code> and light source), the distance to the light, and the <code class='code-inline'>pdf</code> evaltuated at <code class='code-inline'>wi</code>. We then use that sample to generate a ‘shadow ray’ from <code class='code-inline'>hit_p</code> in the <code class='code-inline'>wi</code> direction and set its min to <code class='code-inline'>EPS</code> and max to the distance minus <code class='code-inline'>EPS</code>. 
+</li><li>	To calculate <code class='code-inline'>f(wi-&gt;wo)</code> and cos theta, we convert <code class='code-inline'>wi</code> to object space. If we find that the light is not behind the surface and the shadow ray does not intersect anything, then we similarly calculate our estimate (emission weighed by <code class='code-inline'>f(wi-&gt;wo)</code> and cosine). We divide it by the generated <code class='code-inline'>pdf</code> and add it to our running estimate. For area lights, we average out the running sum of area light estimates before adding it to the overall estimate. We then divide by the overall <code class='code-inline'>PDF</code> and return.
+</li></ul>
+
+<br>
+<p><i>Focus on one particular scene with at least one area light and compare the noise levels in soft shadows when rendering with 1, 4, 16, and 64 light rays (the -l flag) and with 1 sample per pixel (the -s flag) using light sampling, not uniform hemisphere sampling.</i></p>
+<br>
+<div align="middle">
+	<table style="width:100%">
+		<tr align="center">
+			<td>
+				<img src="images/task3_1.png" align="middle" width="400px" />
+				<figcaption>1 Light Ray </figcaption>
+			</td>
+			<td>
+				<img src="images/task3_4.png" align="middle" width="400px" />
+				<figcaption>4 Light Rays </figcaption>
+			</td>
+		</tr>
+		<tr align="center">
+			<td>
+				<img src="images/task3_16.png" align="middle" width="400px" />
+				<figcaption>16 Light Rays </figcaption>
+			</td>
+			<td>
+				<img src="images/task3_64.png" align="middle" width="400px" />
+				<figcaption>64 Light Rays </figcaption>
+			</td>
+		</tr>
+	</table>
+</div>
+<br>
+<p>In importance sampling, we see significant noise reduction with additional light rays. We especially see this around the shadow of the bunny.
+	With only 1 ray, noise would extend to the back of the cornell box; as more rays are added, we see the shadow center in closer to the bunny and
+	soften as it gets further away. You can also see the shadows along the walls soften and get much less noisy as the rays increase, eventually
+	giving the impression of smooth red, gray, and blue walls. As the number of rays increase, light sampling is able to create a more accurate
+	estimate of reflected light – there is lower variance, so there is less generated noise.</p>
+<br>
+<p><i>Compare the results between uniform hemisphere sampling and lighting sampling in a one-paragraph analysis.</i></p>
+<div align="middle">
+	<table style="width:100%">
+		<!-- Header -->
+		<tr align="center">
+			<th>
+				<b>Uniform Hemisphere Sampling</b>
+			</th>
+			<th>
+				<b>Light Sampling</b>
+			</th>
+		</tr>
+		<br />
+		<tr align="center">
+			<td>
+				<img src="images/task3_hemi_1.png" align="middle" width="400px" />
+				<figcaption>CBbunny.dae</figcaption>
+			</td>
+			<td>
+				<img src="images/task3_light_1.png" align="middle" width="400px" />
+				<figcaption>CBbunny.dae</figcaption>
+			</td>
+		</tr>
+		<br />
+		<tr align="center">
+			<td>
+				<img src="images/task3_hemi_2.png" align="middle" width="400px" />
+				<figcaption>CBspheres_lambertian.dae</figcaption>
+			</td>
+			<td>
+				<img src="images/task3_light_2.png" align="middle" width="400px" />
+				<figcaption>CBspheres_lambertian.dae</figcaption>
+			</td>
+		</tr>
+		<br />
+	</table>
+</div>
+<br>
+<p>Uniform hemisphere sampling is noisier overall compared to lighting sampling because it samples the area indiscriminately. Light sampling is able to generate a more visually accurate estimate by generating ‘shadow rays’ and focusing on sampling areas where light is reflected. Even with similar parameters / number of rays, light sampling creates softer, smoother shadows compared to hemisphere sampling because of its decreased variance and noise.</p>
+<br>
+<br>
+<h2 id="Global Illumination">Global Illumination </h2>
+<p><i>Walk through your implementation of the indirect lighting function.</i></p>
+<br>
+<p>Indirect lighting is the light reflected from other surfaces, or not the direct light source. It can be computed by recursively casting a new ray from its hit point in a random direction. The effect is global illumination. We implemented global illumination by: </p>
+<ul><li>	Calling <code class='code-inline'>one_bounce_radiance()</code> to grab the direct lighting.  In the end, the value of our resulting ray will a sum of direct and indirect lighting. 
+</li><li>	Initializing <code class='code-inline'>emission_fsample</code>   by calling <code class='code-inline'>isect.bdsf</code> which sets <code class='code-inline'>wi</code> to our sample direction and returns <code class='code-inline'>f(wi -&gt; wo)</code> 
+</li><li>	If  <code class='code-inline'>max_ray_depth &gt; 1</code> , we cast a ray and make sure to set its min to <code class='code-inline'>EPS_F</code> decrement its depth. We also set our termination rate a 0.65 to prevent infinite recursion. 
+</li><li>	If our ray doesn’t intersect the BVH, we accumulate <code class='code-inline'>L_out</code>  with the result of calling <code class='code-inline'>at_least_one_bounce_radiance</code> on the new ray. We weigh the result with bdsf and cosine as in earlier problems, and divide by the <code class='code-inline'>pdf</code> and our russian roulette termination probability of 0.65. 
+</li></ul>
+<br>
+<br>
+<p><i>Pick one scene and compare rendered views first with </i><b><i>only</i></b><i> direct illumination, then </i><b><i>only</i></b><i> indirect illumination. Use 1024 samples per pixel.</i></p>
+<br>
+<div align="middle">
+	<table style="width:500px">
+		<div>
+			<img src="images/task4_direct.png" align="middle" width="500px" />
+			<figcaption>Direct Lighting, CBspheres_labertian.dae</figcaption>
+		</div>
+		<div>
+			<img src="images/task4_indirect_spheres.png" align="middle" width="500px" />
+			<figcaption>Indirect Lighting, CBspheres_labertian.dae</figcaption>
+		</div>
+	</table>
+</div>
+<br>
+<br>
+<p><i>For <i>CBbunny.dae</i>, compare rendered views with max<i>ray</i>depth set to 0, 1, 2, 3, and 100 (the -m flag). Use 1024 samples per pixel. </i></p>
+<br>
+<table style="width:100%">
+	<tr align="center">
+		<td>
+			<img src="images/task4_m0.png" align="middle" width="400px" />
+			<figcaption> 0 max_ray_depth </figcaption>
+		</td>
+		<td>
+			<img src="images/task4_m1.png" align="middle" width="400px" />
+			<figcaption> 1 max_ray_depth </figcaption>
+		</td>
+	</tr>
+	<tr align="center">
+		<td>
+			<img src="images/task4_m2.png" align="middle" width="400px" />
+			<figcaption> 2 max_ray_depth </figcaption>
+		</td>
+		<td>
+			<img src="images/task4_m3.png" align="middle" width="400px" />
+			<figcaption> 3 max_ray_depth </figcaption>
+		</td>
+	</tr>
+</table>
+<div align="middle">
+	<table style="width:500px">
+		<div>
+			<img src="images/task4_m100.png" align="middle" width="400px" />
+			<figcaption> 100 max_ray_depthe</figcaption>
+		</div>
+	</table>
+</div>
+
+<br>
+<p><i>Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.</i></p>
+<br>
+<table style="width:100%">
+	<tr align="center">
+		<td>
+			<img src="images/task4_spheres_1.png" align="middle" width="400px" />
+			<figcaption>1 Light Ray </figcaption>
+		</td>
+		<td>
+			<img src="images/task4_spheres_2.png" align="middle" width="400px" />
+			<figcaption>2 Light Rays </figcaption>
+		</td>
+	</tr>
+	<tr align="center">
+		<td>
+			<img src="images/task4_spheres_4.png" align="middle" width="400px" />
+			<figcaption>4 Light Rays </figcaption>
+		</td>
+		<td>
+			<img src="images/task4_spheres_8.png" align="middle" width="400px" />
+			<figcaption>8 Light Rays </figcaption>
+		</td>
+	</tr>
+	<tr align="center">
+		<td>
+			<img src="images/task4_spheres_16.png" align="middle" width="400px" />
+			<figcaption>16 Light Rays </figcaption>
+		</td>
+		<td>
+			<img src="images/task4_spheres_64.png" align="middle" width="400px" />
+			<figcaption>64 Light Rays </figcaption>
+		</td>
+	</tr>
+</table>
+<div align="middle">
+	<img src="images/task4_spheres_1024.png" align="middle" width="400px" />
+	<figcaption>1024 Light Rays </figcaption>
+</div>
+<br>
+<h2 id="Adaptive Sampling">Adaptive Sampling </h2>
+<p>Adaptive sampling changes the sample rate depending on how fast a pixel converges. We should take fewer samples of pixels that converge quickly, and take more samples in more concentrated areas. </p>
+<br>
+<p>We implemented adaptive sampling by updating our <code class='code-inline'>raytrace_pixel()</code> function: </p>
+<br>
+<ul><li>	Keep track of how many <code class='code-inline'>samples</code> you’re sampling, which we later replace <code class='code-inline'>num_samples</code> with when updating the radiance and <code class='code-inline'>sampleCounterBuffer</code>
+</li><li>	If <code class='code-inline'>I &lt;= maxTolorance * mean</code>, then we stop sampling because we know the pixel has converged. 
+</li><li>	Otherwise, we update the number of samples taken at the pixel. 
+</li></ul>
+<br>
+<br>
+<p><i>Pick two scenes and render them with at least 2048 samples per pixel. Show a good sampling rate image with clearly visible differences in sampling rate over various regions and pixels. Include both your sample rate image, which shows your how your adaptive sampling changes depending on which part of the image you are rendering, and your noise-free rendered result. Use 1 sample per light and at least 5 for max ray depth.</i></p>
+<br>
+<div align="middle">
+<table style="width:500px">
+	<figcaption>CBbunny with 2048 samples, 1 light ray, m 5</figcaption>
+	<div>
+		<img src="images/task5_bunny.png" align="middle" width="500px" />
+		<figcaption>Render </figcaption>
+	</div>
+	<div>
+		<img src="images/task5_bunnyrate.png" align="middle" width="500px" />
+		<figcaption>Sample Rate</figcaption>
+	</div>
+</table>
+</div>
+<br>
+<br>
+<br>
+
+        </div>
+        <script type="text/javascript">
+            (function() {
+
+    var doc_ols = document.getElementsByTagName("ol");
+
+    for ( i=0; i<doc_ols.length; i++) {
+
+        var ol_start = doc_ols[i].getAttribute("start") - 1;
+        doc_ols[i].setAttribute("style", "counter-reset:ol_counter " + ol_start + ";");
+
+    }
+
+})();
+
+        </script>
+        <style>
+            html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font:inherit;font-size:100%;vertical-align:baseline}html{line-height:1}ol,ul{list-style:none}table{border-collapse:collapse;border-spacing:0}caption,th,td{text-align:left;font-weight:normal;vertical-align:middle}q,blockquote{quotes:none}q:before,q:after,blockquote:before,blockquote:after{content:"";content:none}a img{border:none}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}*{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}html{font-size:87.5%;line-height:1.57143em}html{font-size:14px;line-height:1.6em;-webkit-text-size-adjust:100%}body{background:#fcfcfc;color:#545454;text-rendering:optimizeLegibility;font-family:"AvenirNext-Regular"}a{color:#de4c4f;text-decoration:none}h1{font-family:"AvenirNext-Medium";color:#333;font-size:1.6em;line-height:1.3em;margin-bottom:.78571em}h2{font-family:"AvenirNext-Medium";color:#333;font-size:1.3em;line-height:1em;margin-bottom:.62857em}h3{font-family:"AvenirNext-Medium";color:#333;font-size:1.15em;line-height:1em;margin-bottom:.47143em}p{margin-bottom:1.57143em;hyphens:auto}hr{height:1px;border:0;background-color:#dedede;margin:-1px auto 1.57143em auto}ul,ol{margin-bottom:.31429em}ul ul,ul ol,ol ul,ol ol{margin-bottom:0px}ol{counter-reset:ol_counter}ol li:before{content:counter(ol_counter) ".";counter-increment:ol_counter;color:#e06e73;text-align:right;display:inline-block;min-width:1em;margin-right:0.5em}b,strong{font-family:"AvenirNext-Bold"}i,em{font-family:"AvenirNext-Italic"}code{font-family:"Menlo-Regular"}.text-overflow-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sf_code_string,.sf_code_selector,.sf_code_attr-name,.sf_code_char,.sf_code_builtin,.sf_code_inserted{color:#D33905}.sf_code_comment,.sf_code_prolog,.sf_code_doctype,.sf_code_cdata{color:#838383}.sf_code_number,.sf_code_boolean{color:#0E73A2}.sf_code_keyword,.sf_code_atrule,.sf_code_rule,.sf_code_attr-value,.sf_code_function,.sf_code_class-name,.sf_code_class,.sf_code_regex,.sf_code_important,.sf_code_variable,.sf_code_interpolation{color:#0E73A2}.sf_code_property,.sf_code_tag,.sf_code_constant,.sf_code_symbol,.sf_code_deleted{color:#1B00CE}.sf_code_macro,.sf_code_entity,.sf_code_operator,.sf_code_url{color:#920448}.note-wrapper{max-width:46em;margin:0px auto;padding:1.57143em 3.14286em}.note-wrapper.spotlight-preview{overflow-x:hidden}u{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#e06e73 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}s{color:#878787}p{margin-bottom:0.1em}hr{margin-bottom:0.7em;margin-top:0.7em}ul li{text-indent:-0.35em}ul li:before{content:"•";color:#e06e73;display:inline-block;margin-right:0.3em}ul ul{margin-left:1.25714em}ol li{text-indent:-1.45em}ol ol{margin-left:1.25714em}blockquote{display:block;margin-left:-1em;padding-left:0.8em;border-left:0.2em solid #e06e73}.todo-list ul{margin-left:1.88571em}.todo-list li{text-indent:-1.75em}.todo-list li:before{content:"";display:static;margin-right:0px}.todo-checkbox{text-indent:-1.7em}.todo-checkbox svg{margin-right:0.3em;position:relative;top:0.2em}.todo-checkbox svg #check{display:none}.todo-checkbox.todo-checked #check{display:inline}.todo-checkbox.todo-checked+.todo-text{text-decoration:line-through;color:#878787}.code-inline{display:inline;background:white;border:solid 1px #dedede;padding:0.2em 0.5em;font-size:0.9em}.code-multiline{display:block;background:white;border:solid 1px #dedede;padding:0.7em 1em;font-size:0.9em;overflow-x:auto}.hashtag{display:inline-block;color:white;background:#b8bfc2;padding:0.0em 0.5em;border-radius:1em;text-indent:0}.hashtag a{color:#fff}.address a{color:#545454;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#0da35e 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}.address svg{position:relative;top:0.2em;display:inline-block;margin-right:0.2em}.color-preview{display:inline-block;width:1em;height:1em;border:solid 1px rgba(0,0,0,0.3);border-radius:50%;margin-right:0.1em;position:relative;top:0.2em;white-space:nowrap}.color-code{margin-right:0.2em;font-family:"Menlo-Regular";font-size:0.9em}.color-hash{opacity:0.4}.ordered-list-number{color:#e06e73;text-align:right;display:inline-block;min-width:1em}.arrow svg{position:relative;top:0.08em;display:inline-block;margin-right:0.15em;margin-left:0.15em}.arrow svg #rod{stroke:#545454}.arrow svg #point{fill:#545454}mark{color:inherit;display:inline;padding:0.2em 0.5em;background-color:#fcffc0}img{max-width:100%;height:auto}
+
+        </style>
+    </body>
 </html>
