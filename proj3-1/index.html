@@ -58,7 +58,7 @@
 <br>
 <p>Rendering more complex scenes can take a very long time. So far, our implemention checks for rays against every object, even if the ray doesn’t intersect the object. We can speed up this process by implementing a bounding volume hiearchy which uses the tree data structure to speed up rendering. </p>
 <br>
-<p> We constructed our BVH by creating a bounding box for each node, and splitting the box using its centroid sum as suggested. We register whether a node is a leaf node if its list of primitives is less than or equal to the <code class='code-inline'>max_leaf_size</code>. If not, we partition our list of primitives using the centroid sum as the split value. We handle 3 cases for each of the x, y, or z axes we could be aligning on, and then select the new middle to the result of our partition. We ensures our list of primitives stays sorted from left to right in each in consecutive recursive call by setting this new middle as the new </p>
+<p> We constructed our BVH by creating a bounding box for each node, and splitting the box using its centroid sum as suggested. We register whether a node is a leaf node if its list of primitives is less than or equal to the <code class='code-inline'>max_leaf_size</code>. If not, we partition our list of primitives using the centroid sum as the split value. We handle 3 cases for each of the x, y, or z axes we could be aligning on, and then select the new middle to the result of our partition. This ensures our list of primitives stays sorted from left to right in each in consecutive recursive call by setting this new middle as the new </p>
 <p>start for <code class='code-inline'>node-&gt;right</code>, and as usual for <code class='code-inline'>node-&gt;left</code>. </p>
 <br>
 <div align="middle">

@@ -1,7 +1,164 @@
+<!DOCTYPE html>
 <html>
-	<head>
-	</head>
-	<body>
-		Project 3-2 here
-	</body>
+    <head>
+        <title>Project 3-2: PathTracer</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="bear-note-unique-identifier" content="85659CB8-0495-4FA8-A669-622262CA2E7D-619-0000014BB794D0BB">
+        <meta name="created" content="2023-03-23T21:19:55-0700"/>
+        <meta name="modified" content="2023-03-25T00:48:44-0700"/>
+        <meta name="tags" content=""/>
+        <meta name="last device" content="Shannon’s MacBook Pro"/>
+    </head>
+    <body>
+        <div class="note-wrapper">
+            <h1 id="Project 3-2: PathTracer">Project 3-2: PathTracer </h1>
+<h3 id="CS 184: Computer Graphics and Imaging, Spring 2023">CS 184: Computer Graphics and Imaging, Spring 2023</h3>
+<h3 id="Shannon Bonet & Ace Chen">Shannon Bonet & Ace Chen</h3>
+<p><a href="https://shannonbonet.github.io/speed/proj3-2/index.html">Link to Site</a></p>
+<br>
+<h2 id="Overview">Overview </h2>
+<p>In 3-2, we added support for rendering glass and mirrors & microfacet material. We didn’t encounter too many problems in this project. Though the spec was really detailed, most bugs were mistakes in formula expression, particularly when dealing with null and zero values. </p>
+<br>
+<h2 id="Part 1: Mirror and Glass">Part 1: Mirror and Glass </h2>
+<table style="width:100%">
+	<figcaption align="center"> <code class='code-inline'> CBspheres.dae</code> </figcaption>
+	<tr align="center">
+		<td>
+			<img src="images/task1_0.png" align="middle" width="500px" />
+			<figcaption> 0 max_ray_depth </figcaption>
+		</td>
+		<td>
+			<img src="images/task1_1.png" align="middle" width="500px" />
+			<figcaption> 1 max_ray_depth </figcaption>
+		</td>
+	</tr>
+	<tr align="center">
+		<td>
+			<img src="images/task1_2.png" align="middle" width="500px" />
+			<figcaption> 2 max_ray_depth </figcaption>
+		</td>
+		<td>
+			<img src="images/task1_3.png" align="middle" width="500px" />
+			<figcaption> 3 max_ray_depth </figcaption>
+		</td>
+	</tr>
+	<tr align="center">
+		<td>
+			<img src="images/task1_4.png" align="middle" width="500px" />
+			<figcaption> 4 max_ray_depth </figcaption>
+		</td>
+		<td>
+			<img src="images/task1_5.png" align="middle" width="500px" />
+			<figcaption> 5 max_ray_depth </figcaption>
+		</td>
+	</tr>
+</table>
+<div align="middle">
+	<table style="width:500px">
+		<div>
+			<img src="images/task1_100.png" align="middle" width="600px" />
+			<figcaption> 100 max_ray_depthå</figcaption>
+		</div>
+	</table>
+</div>
+<p><i>Point out the new multibounce effects that appear in each image.</i></p>
+<ul><li>	Ray depth 0: Fully dark except for area light 
+</li><li>	Ray depth 1: Walls and floor visible, spheres black with patches of area light
+</li><li>	Ray depth 2: Ceiling visible, walls and floor reflected on left sphere, walls and floor dimly visible on right sphere
+</li><li>	Ray depth 3: Box brighter, ceiling reflected on left sphere, right sphere refracting light and showing highlight underneath
+</li><li>	Ray depth 4: Box brighter, right sphere reflection is visible in left sphere, highlight under right sphere also lights the bottom of the sphere, patch of light on the right wall
+</li><li>	Ray depth 5: Scene and spheres are brighter overall
+</li><li>	Ray depth 100: Scene and spheres are brighter overall
+</li></ul>
+<br>
+<p><i>Explain how these bounce numbers relate to the particular effects that appear. Make sure to include all screenshots.</i></p>
+<ul><li>	Ray depth 0: There are no light bounces, so the only light we see is the area light rays going straight to the camera.
+</li><li>	Ray depth 1: We see the spheres as black with shadows because they prevent rays from passing through them, and we see the area light patch on the sphere as it bounces off the surface into the camera. The left sphere reflects all the light while the right sphere only partially reflects, which is why the right patch appears spottier.
+</li><li>	Ray depth 2: On the left reflective sphere, we are able to see the colors of the Cornell box as rays can bounce from the area light into the sphere and then into the camera. We are not able to see the ceiling of the box in the sphere as the area light does not illuminate the ceiling, but the ceiling of the box itself is dimly lit because light can bounce off surfaces into the ceiling. The right sphere similarly starts to reflect some light as rays bounce from the light to the walls to the sphere, but it’s still very dark as most of the light is entering the sphere for refraction.
+</li><li>	Ray depth 3: The ceiling is visible in the left sphere because light can reflect from the area light to a surface to the ceiling and then to the left sphere. The right sphere is now properly refracting light because light can bounce from a surface into the sphere, then out of the sphere, then into the camera. The highlight under the sphere shows up as a result of light entering the sphere, exiting the sphere, and bouncing off the floor into the camera. The box is also brighter as more light is reflected onto it.
+</li><li>	Ray depth 4: The right sphere can be seen in the left one because light bounces on the blue wall, into the right sphere, out of the right sphere, then onto the left sphere and into the camera. The bottom of the right sphere is also lit as light from the highlight spot bounces back on the sphere and into the camera. Similarly, this causes a patch of light on the right wall as light from the highlight reflects onto the wall and into the camera.
+</li><li>	Ray depth 5: At this point, most notable bounce effects are in place. The main difference is that the right ball continues to get brighter as light bounces through the ball more.
+</li><li>	Ray depth 100: Again larger the same, but with a brighter scene as light bounces more frequently.
+</li></ul>
+<br>
+<br>
+<br>
+<h2 id="Part 2: Microfacet Material">Part 2: Microfacet Material</h2>
+<p>We observed that higher α values produce a rougher appearance, and  smaller α values produce smoother results.
+	 The following <code class='code-inline'>CBdragon_microfacet_au.dae</code> images were made with 256 samples, 4 samples per light,
+	  and 5 bounces. For <code class='code-inline'>0.005</code> and <code class='code-inline'>0.05</code> values, there’s a noticable smoothness 
+	  that that <code class='code-inline'>0.25</code> and <code class='code-inline'>0.5</code> lack. </p>
+<br>
+<table style="width:100%">
+	<tr align="center">
+		<td>
+			<img src="images/dragon_0005.png" align="middle" width="500px" />
+			<figcaption><code class='code-inline'>0.005 α</code> </figcaption>
+		</td>
+		<td>
+			<img src="images/dragon_05.png" align="middle" width="500px" />
+			<figcaption> <code class='code-inline'>0.05 α</code> </figcaption>
+		</td>
+	</tr>
+	<tr align="center">
+		<td>
+			<img src="images/dragon_25.png" align="middle" width="500px" />
+			<figcaption><code class='code-inline'>0.25 α</code></figcaption>
+		</td>
+		<td>
+			<img src="images/dragon_5.png" align="middle" width="500px" />
+			<figcaption> <code class='code-inline'>0.5 α</code> </figcaption>
+		</td>
+	</tr>
+</table>
+<br>
+<p>Using cosine hemisphere sampling, we observe a noisier image in comparison to importance sampling. This is expected, as importance sampling better distributes the light in areas where expected. </p>
+<br>
+<div align="middle">
+	<table style="width:500px">
+		<div>
+			<figcaption>hemisphere sampling, 64 samples 1 light 5 bounce</figcaption>
+			<img src="images/bunny_hem.png" align="middle" width="500px" />
+		</div>
+		<div>
+			<figcaption>importance sampling, 64 samples 1 light 5 bounce</figcaption>
+			<img src="images/bunny_imp.png" align="middle" width="500px" />
+		</div>
+	</table>
+</div>
+
+<p>We can also change η and k to create different conductor materials beyond the provided silver and gold. For instance, we can create a nickle 
+	bunny as shown below where <code class='code-inline'>η = 1.9874 (r) 1.9200 (g) 1.7675 (b)</code> and <code class='code-inline'>k = 4.0011 (r) 3.6100 (g) 3.0550 (b)</code>. </p>
+<br>
+<br>
+<br>
+<br>
+<div align="middle">
+	<figcaption> nickle bunbun, 512 samples 1 light 5 bounce </figcaption>
+	<img src="images/bunny.png" align="middle" width="500px" />
+</div>
+<br>
+<br>
+        </div>
+        <script type="text/javascript">
+            (function() {
+
+    var doc_ols = document.getElementsByTagName("ol");
+
+    for ( i=0; i<doc_ols.length; i++) {
+
+        var ol_start = doc_ols[i].getAttribute("start") - 1;
+        doc_ols[i].setAttribute("style", "counter-reset:ol_counter " + ol_start + ";");
+
+    }
+
+})();
+
+        </script>
+        <style>
+            html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font:inherit;font-size:100%;vertical-align:baseline}html{line-height:1}ol,ul{list-style:none}table{border-collapse:collapse;border-spacing:0}caption,th,td{text-align:left;font-weight:normal;vertical-align:middle}q,blockquote{quotes:none}q:before,q:after,blockquote:before,blockquote:after{content:"";content:none}a img{border:none}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}*{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}html{font-size:87.5%;line-height:1.57143em}html{font-size:14px;line-height:1.6em;-webkit-text-size-adjust:100%}body{background:#fcfcfc;color:#545454;text-rendering:optimizeLegibility;font-family:"AvenirNext-Regular"}a{color:#de4c4f;text-decoration:none}h1{font-family:"AvenirNext-Medium";color:#333;font-size:1.6em;line-height:1.3em;margin-bottom:.78571em}h2{font-family:"AvenirNext-Medium";color:#333;font-size:1.3em;line-height:1em;margin-bottom:.62857em}h3{font-family:"AvenirNext-Medium";color:#333;font-size:1.15em;line-height:1em;margin-bottom:.47143em}p{margin-bottom:1.57143em;hyphens:auto}hr{height:1px;border:0;background-color:#dedede;margin:-1px auto 1.57143em auto}ul,ol{margin-bottom:.31429em}ul ul,ul ol,ol ul,ol ol{margin-bottom:0px}ol{counter-reset:ol_counter}ol li:before{content:counter(ol_counter) ".";counter-increment:ol_counter;color:#e06e73;text-align:right;display:inline-block;min-width:1em;margin-right:0.5em}b,strong{font-family:"AvenirNext-Bold"}i,em{font-family:"AvenirNext-Italic"}code{font-family:"Menlo-Regular"}.text-overflow-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sf_code_string,.sf_code_selector,.sf_code_attr-name,.sf_code_char,.sf_code_builtin,.sf_code_inserted{color:#D33905}.sf_code_comment,.sf_code_prolog,.sf_code_doctype,.sf_code_cdata{color:#838383}.sf_code_number,.sf_code_boolean{color:#0E73A2}.sf_code_keyword,.sf_code_atrule,.sf_code_rule,.sf_code_attr-value,.sf_code_function,.sf_code_class-name,.sf_code_class,.sf_code_regex,.sf_code_important,.sf_code_variable,.sf_code_interpolation{color:#0E73A2}.sf_code_property,.sf_code_tag,.sf_code_constant,.sf_code_symbol,.sf_code_deleted{color:#1B00CE}.sf_code_macro,.sf_code_entity,.sf_code_operator,.sf_code_url{color:#920448}.note-wrapper{max-width:46em;margin:0px auto;padding:1.57143em 3.14286em}.note-wrapper.spotlight-preview{overflow-x:hidden}u{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#e06e73 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}s{color:#878787}p{margin-bottom:0.1em}hr{margin-bottom:0.7em;margin-top:0.7em}ul li{text-indent:-0.35em}ul li:before{content:"•";color:#e06e73;display:inline-block;margin-right:0.3em}ul ul{margin-left:1.25714em}ol li{text-indent:-1.45em}ol ol{margin-left:1.25714em}blockquote{display:block;margin-left:-1em;padding-left:0.8em;border-left:0.2em solid #e06e73}.todo-list ul{margin-left:1.88571em}.todo-list li{text-indent:-1.75em}.todo-list li:before{content:"";display:static;margin-right:0px}.todo-checkbox{text-indent:-1.7em}.todo-checkbox svg{margin-right:0.3em;position:relative;top:0.2em}.todo-checkbox svg #check{display:none}.todo-checkbox.todo-checked #check{display:inline}.todo-checkbox.todo-checked+.todo-text{text-decoration:line-through;color:#878787}.code-inline{display:inline;background:white;border:solid 1px #dedede;padding:0.2em 0.5em;font-size:0.9em}.code-multiline{display:block;background:white;border:solid 1px #dedede;padding:0.7em 1em;font-size:0.9em;overflow-x:auto}.hashtag{display:inline-block;color:white;background:#b8bfc2;padding:0.0em 0.5em;border-radius:1em;text-indent:0}.hashtag a{color:#fff}.address a{color:#545454;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#0da35e 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}.address svg{position:relative;top:0.2em;display:inline-block;margin-right:0.2em}.color-preview{display:inline-block;width:1em;height:1em;border:solid 1px rgba(0,0,0,0.3);border-radius:50%;margin-right:0.1em;position:relative;top:0.2em;white-space:nowrap}.color-code{margin-right:0.2em;font-family:"Menlo-Regular";font-size:0.9em}.color-hash{opacity:0.4}.ordered-list-number{color:#e06e73;text-align:right;display:inline-block;min-width:1em}.arrow svg{position:relative;top:0.08em;display:inline-block;margin-right:0.15em;margin-left:0.15em}.arrow svg #rod{stroke:#545454}.arrow svg #point{fill:#545454}mark{color:inherit;display:inline;padding:0.2em 0.5em;background-color:#fcffc0}img{max-width:100%;height:auto}
+
+        </style>
+    </body>
 </html>
