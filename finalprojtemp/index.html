@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ToonTown Cel Central</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="bear-note-unique-identifier" content="23CDD7D4-0645-4595-A2D4-7B2E1E080A6E-457-0000B22B7FC12B9C">
+        <meta name="created" content="2023-04-06T20:16:06-0700"/>
+        <meta name="modified" content="2023-04-06T20:18:02-0700"/>
+        <meta name="tags" content=""/>
+        <meta name="last device" content="Shannon’s MacBook Pro"/>
+    </head>
+    <body>
+        <div class="note-wrapper">
+            <h1 id="ToonTown Cel Central">ToonTown Cel Central </h1>
+<p>We’re building the most epic cel shader to effectively replicate 2D “cartoon” aesthetics. We’ll use color banding, specular lighting, rim lighting, and outline weight to approximate toon shading through an interactive GUI.</p>
+<br>
+<h3 id="Team Members">Team Members</h3>
+<p>Shannon Bonet, Ace Chen, Isabel Li, Bailey Segall</p>
+<br>
+<h1 id="Problem Description">Problem Description</h1>
+<p>Cel shading, or toon shading, is a type of non-photorealistic rendering which allows 3D computer graphics to appear 2D through the stylistic application of limited shading colors rather than shade gradients or tints and shades. This style can be expressive for animation or video game rendering styles; for example, popular games like Legend of Zelda: Breath of the Wild and Genshin Impact use cel (or cel-like) shading. However, it can also be difficult to achieve a complete and consistent flat “cartoon” effect. Some challenges may include how, when cel shading is implemented without smoothing, the jagged details of the 3D mesh can become too visually apparent for a convincing 2D style, or how improper choices of banding thresholds may not effectively illustrate the 3D shape to the viewer. We also have not encountered many complex web-based cel shaders.</p>
+<br>
+<br>
+<p>For our project, we intend to build a web-based cel shader which can apply consistent and effective 2D-like styles to 3D meshes. To produce a visually appealing style which can hopefully avoid some of the challenges above, we intend to produce an interactive GUI system in which parameters such as color, banding, and specular lighting can be customized to produce the ideal aesthetic. Having implemented this, we also may extend to additional features, such as parameter presets which when clicked can apply a variation of appealing pre-defined cel shaders. In terms of technologies used to build the shader, we will be exploring Three.js, React Three Fiber, and GLSL (WebGL).</p>
+<br>
+<br>
+<h1 id="Goal and Deliverables">Goal and Deliverables</h1>
+<ul><li>Our goal is to create a cel shader using a web framework (Three.js or React Three Fiber) to render visually interesting and appealing images. We also plan to implement an interactive interface to manipulate parameters of the shader like color, banding, specular lighting, and outline weight. 
+</li><li>To measure the success of our system, we want to be able to render images that give the appearance of the same aesthetic across different models. To better define what a visually appealing aesthetic means, we want to ensure limited jaggies/artifacts and consistency across renders. We also want to be able to apply cel shading to a variety of models (or really any model). Finally, we want to do this with reasonable efficiency so that the user can feasibly interact with the shader GUI without much delay. In this project, one question we want to answer is learning how shaders work on the web to expand on what we’ve been learning in class.
+</li><li>In our shader, we plan to implement diffuse lighting, the cel shading itself, specular highlights, rim lighting, and outlining. As a set of stretch goals, we would also like to add bump mapping to show detail, selectable presets for parameter settings, and weighted outlining to mimic lineweight.
+</li></ul>
+<br>
+<h1 id="Schedule">Schedule</h1>
+<ul><li>	4/9 – 4/15 
+<ul><li>		Set up web framework (Three.js or React) 
+</li><li>		Implement custom shader 
+<ul><li>			Lighting model 
+</li><li>			Diffuse + Blinn Phong Shading 
+</li></ul></li></ul></li><li>	4/16 – 4/22 
+<ul><li>		Implement cel-shading – essentially specify <b>cutoff point</b>on dot product value
+</li><li>		Implement smooth falloff – intermediate smoothing to make the cels less harsh
+</li><li>		Specular and rim lighting 
+</li><li>		Outlining 
+</li></ul></li><li>	4/23 – 4/29 
+<ul><li>		4/25 milestone: Cel shading complete, only working on stretch goals 
+</li><li>		Stretch goals 
+<ul><li>			Weighted outlining 
+</li><li>			Can also add bump mapping for making detail visible 
+</li><li>			Add clickable pre-sets 
+</li></ul></li></ul></li><li>	4/30 – 5/3 Presentation, 5/4 Final Deliverable
+<ul><li>		Write up
+</li><li>		Video 
+</li></ul>
+</li></ul>
+<br>
+<h1 id="Resources">Resources</h1>
+<ul><li>	 <a href="https://css-tricks.com/creating-photorealistic-3d-graphics-web/">Three.js</a> : Open source JS library, abstracts WebGL complexity into easier AP
+</li><li>	<a href="https://blog.maximeheckel.com/posts/the-study-of-shaders-with-react-three-fiber/">React Three Fiber</a>  [potentially]: React renderer for Three.js – it’s newer and less documented online. <b>Question to staff: has anyone worked with this before and had success?</b></li></ul>
+<br>
+<h1 id="Inspo">Inspiration</h1>
+<div align="middle">
+	<table style="width:500px">
+		<tr align="center">
+			<td style="padding-right:30px">
+				<figcaption>okami</figcaption>
+				<img src="images/okami.png" align="middle" width="500px" />
+			</td>
+			<td>
+				<p>painterly textures + cel shading</p>
+				<p>sumi-ink style rendering</p>
+				<p>heavy on the outlines </p>
+				<p>uses interesting line weight </p>
+			</td>
+		</tr>
+		<tr align="center">
+			<td  style="padding-right:30px">
+				<figcaption>hades</figcaption>
+				<img src="images/hades.png" align="middle" width="500px" />
+			</td>
+			<td>
+				<p>cel shading </p>
+				<p>black for shadow regions	</p>
+				<p>minimal banding </p>			</td>
+		</tr>
+		<tr align="center">
+			<td  style="padding-right:30px">
+				<figcaption>hike</figcaption>
+				<img src="images/hike.png" align="middle" width="500px" />
+			</td>
+			<td>
+				<p>pixelated, esp edges</p>
+				<p>cel shading</p>
+				<p>selective outlining (edge of scene)</p>			
+			</td>
+		</tr>
+	</table>
+</div>
+
+        </div>
+        <script type="text/javascript">
+            (function() {
+
+    var doc_ols = document.getElementsByTagName("ol");
+
+    for ( i=0; i<doc_ols.length; i++) {
+
+        var ol_start = doc_ols[i].getAttribute("start") - 1;
+        doc_ols[i].setAttribute("style", "counter-reset:ol_counter " + ol_start + ";");
+
+    }
+
+})();
+
+        </script>
+        <style>
+            html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font:inherit;font-size:100%;vertical-align:baseline}html{line-height:1}ol,ul{list-style:none}table{border-collapse:collapse;border-spacing:0}caption,th,td{text-align:left;font-weight:normal;vertical-align:middle}q,blockquote{quotes:none}q:before,q:after,blockquote:before,blockquote:after{content:"";content:none}a img{border:none}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}*{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}html{font-size:87.5%;line-height:1.57143em}html{font-size:14px;line-height:1.6em;-webkit-text-size-adjust:100%}body{background:#fcfcfc;color:#545454;text-rendering:optimizeLegibility;font-family:"AvenirNext-Regular"}a{color:#de4c4f;text-decoration:none}h1{font-family:"AvenirNext-Medium";color:#333;font-size:1.6em;line-height:1.3em;margin-bottom:.78571em}h2{font-family:"AvenirNext-Medium";color:#333;font-size:1.3em;line-height:1em;margin-bottom:.62857em}h3{font-family:"AvenirNext-Medium";color:#333;font-size:1.15em;line-height:1em;margin-bottom:.47143em}p{margin-bottom:1.57143em;hyphens:auto}hr{height:1px;border:0;background-color:#dedede;margin:-1px auto 1.57143em auto}ul,ol{margin-bottom:.31429em}ul ul,ul ol,ol ul,ol ol{margin-bottom:0px}ol{counter-reset:ol_counter}ol li:before{content:counter(ol_counter) ".";counter-increment:ol_counter;color:#e06e73;text-align:right;display:inline-block;min-width:1em;margin-right:0.5em}b,strong{font-family:"AvenirNext-Bold"}i,em{font-family:"AvenirNext-Italic"}code{font-family:"Menlo-Regular"}.text-overflow-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sf_code_string,.sf_code_selector,.sf_code_attr-name,.sf_code_char,.sf_code_builtin,.sf_code_inserted{color:#D33905}.sf_code_comment,.sf_code_prolog,.sf_code_doctype,.sf_code_cdata{color:#838383}.sf_code_number,.sf_code_boolean{color:#0E73A2}.sf_code_keyword,.sf_code_atrule,.sf_code_rule,.sf_code_attr-value,.sf_code_function,.sf_code_class-name,.sf_code_class,.sf_code_regex,.sf_code_important,.sf_code_variable,.sf_code_interpolation{color:#0E73A2}.sf_code_property,.sf_code_tag,.sf_code_constant,.sf_code_symbol,.sf_code_deleted{color:#1B00CE}.sf_code_macro,.sf_code_entity,.sf_code_operator,.sf_code_url{color:#920448}.note-wrapper{max-width:46em;margin:0px auto;padding:1.57143em 3.14286em}.note-wrapper.spotlight-preview{overflow-x:hidden}u{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#e06e73 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}s{color:#878787}p{margin-bottom:0.1em}hr{margin-bottom:0.7em;margin-top:0.7em}ul li{text-indent:-0.35em}ul li:before{content:"•";color:#e06e73;display:inline-block;margin-right:0.3em}ul ul{margin-left:1.25714em}ol li{text-indent:-1.45em}ol ol{margin-left:1.25714em}blockquote{display:block;margin-left:-1em;padding-left:0.8em;border-left:0.2em solid #e06e73}.todo-list ul{margin-left:1.88571em}.todo-list li{text-indent:-1.75em}.todo-list li:before{content:"";display:static;margin-right:0px}.todo-checkbox{text-indent:-1.7em}.todo-checkbox svg{margin-right:0.3em;position:relative;top:0.2em}.todo-checkbox svg #check{display:none}.todo-checkbox.todo-checked #check{display:inline}.todo-checkbox.todo-checked+.todo-text{text-decoration:line-through;color:#878787}.code-inline{display:inline;background:white;border:solid 1px #dedede;padding:0.2em 0.5em;font-size:0.9em}.code-multiline{display:block;background:white;border:solid 1px #dedede;padding:0.7em 1em;font-size:0.9em;overflow-x:auto}.hashtag{display:inline-block;color:white;background:#b8bfc2;padding:0.0em 0.5em;border-radius:1em;text-indent:0}.hashtag a{color:#fff}.address a{color:#545454;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#0da35e 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}.address svg{position:relative;top:0.2em;display:inline-block;margin-right:0.2em}.color-preview{display:inline-block;width:1em;height:1em;border:solid 1px rgba(0,0,0,0.3);border-radius:50%;margin-right:0.1em;position:relative;top:0.2em;white-space:nowrap}.color-code{margin-right:0.2em;font-family:"Menlo-Regular";font-size:0.9em}.color-hash{opacity:0.4}.ordered-list-number{color:#e06e73;text-align:right;display:inline-block;min-width:1em}.arrow svg{position:relative;top:0.08em;display:inline-block;margin-right:0.15em;margin-left:0.15em}.arrow svg #rod{stroke:#545454}.arrow svg #point{fill:#545454}mark{color:inherit;display:inline;padding:0.2em 0.5em;background-color:#fcffc0}img{max-width:100%;height:auto}
+
+        </style>
+    </body>
+</html>
