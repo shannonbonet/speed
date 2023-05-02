@@ -228,27 +228,65 @@
       </div>
       <div id="references">
         <h3>References</h3>
-        <p>
-          Our project goal is to build a non photorealistic cell shader, also
-          known as toon shading. So far, we’ve been able to meet a majority of
-          our timeline goals. We’ve implemented a basic cell shader with
-          directional and ambient lighting, rim lighting, specular highlighting,
-          and one of our stretch goals to support outlining with various
-          thickness levels. Our next tasks mainly surround supporting user
-          interactivity.
-        </p>
+        Basic Cel Shading:
+        <ul>
+          <li>https://roystan.net/articles/toon-shader/</li>
+          <li>https://threejs.org/docs/#api/en/materials/ShaderMaterial</li>
+          <li>https://threejs.org/examples/#webgl_materials_variations_toon</li>
+        </ul>
+
+        Outlining:
+        <ul>
+          <li>https://stemkoski.github.io/Three.js/Outline.html</li>
+          <li>https://jsfiddle.net/9rvb0snk/3/</li>
+          <li>https://gist.github.com/eevee/9cf655e617859d2765f7</li>
+        </ul>
+
+        Bump Mapping:
+        <ul>
+          tba
+        </ul>
+
+        Shadows:
+        <ul>
+          tba
+        </ul>
+
         <br />
       </div>
       <div id="contributions">
         <h3>Contributions</h3>
         <p>
-          Our project goal is to build a non photorealistic cell shader, also
-          known as toon shading. So far, we’ve been able to meet a majority of
-          our timeline goals. We’ve implemented a basic cell shader with
-          directional and ambient lighting, rim lighting, specular highlighting,
-          and one of our stretch goals to support outlining with various
-          thickness levels. Our next tasks mainly surround supporting user
-          interactivity.
+          Our project was conceptualized as a team and we all collaborated on
+          writing the contents of each report, as well as finding and sharing
+          resources to produce our final results.
+        </p>
+        <br />
+        <ul>
+          <li>
+            <b>Shannon Bonet:</b> producing project proposal and milestone
+            report websites, researching React Three Fiber and setting up
+            three.js boilerplate, implementing bump mapping
+          </li>
+          <li>
+            <b>Ace Chen:</b> implementing basic cel shading in three.js (adding
+            directional light), adding rim lighting, contributing to interactive
+            GUI, allowing shader to receive shadows, producing milestone slides
+          </li>
+          <li>
+            <b>Isabel Li:</b> scene setup, implementing basic cel shading in
+            three.js (ambient, directional, specular), adding light and color
+            banding, created 'Hades'-style shader
+          </li>
+          <li>
+            <b>Bailey Segall:</b> producing milestone video, implementing shader
+            GUI to receive variables from frontend, adding outlining
+          </li>
+        </ul>
+        <br />
+        <p>
+          Special thanks to CS184 course staff for your feedback and support in
+          this project.
         </p>
         <br />
       </div>
@@ -725,6 +763,9 @@
 
       .nav a {
         padding-left: 20px;
+      }
+      b {
+        font-family: 'AvenirNext-Medium';
       }
     </style>
   </body>
