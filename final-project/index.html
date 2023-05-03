@@ -34,6 +34,7 @@
           </a>
         </p>
         <br />
+        <h3>Abstract</h3>
         <p>
           Our project goal is to build a non photorealistic cell shader, also
           known as toon shading. So far, we’ve been able to meet a majority of
@@ -43,7 +44,22 @@
           thickness levels. Our next tasks mainly surround supporting user
           interactivity.
         </p>
+
         <br />
+        <!-- <div align="middle">
+          <div>
+            <img src="images/shadey.png" align="middle" width="500px" />
+          </div>
+        </div>
+        <div align="middle">
+          <div>
+            <img src="images/shadier.png" align="middle" width="500px" />
+          </div>
+        </div>
+        <br />
+      </div> -->
+      <div id="technical-approach">
+        <h3>Technical Approach</h3>
         <p>
           In setting up a web framework, we decided to go with using Three.js
           instead of React Three Fiber due to online resource availability and
@@ -55,7 +71,7 @@
           <code class="code-inline">.frag</code> files.
         </p>
         <br />
-        <p>
+         <p>
           We calculated directional lighting by first taking the dot product of
           a surface normal and the direction of light at a given point. Next, we
           used a
@@ -118,14 +134,103 @@
           require altering the code.
         </p>
         <br />
+      </div>
+      <div id="results">
+        <h3 id="Results">Results</h3>
         <p>
-          We’re in the middle of implementing receiving shadows and supporting
-          user interactivity for weighted outlining. We hope to tackle other
-          stretch goals such as bump mapping within the last week!
+          [LIGHTING MODEL]
+        </p>
+        <p>
+          [HADES SHADER]        
+        </p>
+        <p>
+          We had some time to attempt an implemention bump mapping, one of our stretch 
+          goals. We didn’t have enough time to experiment with a custom implementation. 
+          Instead, we ended up testing out Three’s build in <code class='code-inline'>MeshToonShader</code>
+          to use its <code class='code-inline'>bumpMap</code> property to see what the effects 
+          of a texture look like. 
         </p>
         <br />
-        <h3 id="Revised Timeline">Revised Timeline</h3>
+        <div align="middle">
+          <img src="images/5bump.png" align="middle" width="500px" />
+          <figcaption align="middle">scale 0.5</figcaption>
+        </div>
+        <div align="middle">
+          <img src="images/05bump.png" align="middle" width="500px" />
+          <figcaption align="middle">scale 0.05</figcaption>
+        </div>
+        <div align="middle">
+          <img src="images/005bump.png" align="middle" width="500px" />
+          <figcaption align="middle">scale 0.005</figcaption>
+        </div>
+        <p>
+          The `bumpScale` property allows us to change the density of the applied texture. 
+          Lower scale values result in sparser pattern, and gives a smoother cartonoonish appearance. 
+        </p>
         <br />
+      </div>
+      <div id="references">
+        <h3>References</h3>
+        Basic Cel Shading:
+        <ul>
+          <li>      
+            <a href="https://roystan.net/articles/toon-shader"
+             >Toon Shader ↗️ 
+            </a>
+          </li>
+          <li>      
+            <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial"
+             >Shader Material Docs ↗️ 
+            </a>
+          </li>
+          <li>      
+            <a href="https://threejs.org/examples/#webgl_materials_variations_toon"
+             >Material Variations ↗️ 
+            </a>
+          </li>
+        </ul>
+
+        Outlining:
+        <ul>
+          <li>      
+            <a href="https://stemkoski.github.io/Three.js/Outline.html"
+             >Outlining in Three.js ↗️ 
+            </a>
+          </li>
+          <li>      
+            <a href="https://jsfiddle.net/9rvb0snk/3/"
+             >Example ↗️ 
+            </a>
+          </li>
+          <li>      
+            <a href="https://gist.github.com/eevee/9cf655e617859d2765f7"
+             >Outline Shader ↗️ 
+            </a>
+          </li>
+        </ul>
+
+        Bump Mapping:
+        <ul>
+          <li>      
+            <a href="https://sbcode.net/threejs/bumpmap/"
+             >Bump Mapping docs ↗️ 
+            </a>
+          </li>
+          <li>      
+            <a href="https://discoverthreejs.com/book/first-steps/textures-intro/"
+             >Brief Intro ↗️ 
+            </a>
+          </li>
+        </ul>
+
+        Shadows:
+        <ul>
+          tba
+        </ul>
+
+        <br />
+      </div>
+        <h3 id="Revised Timeline">Timeline Results</h3>
         <ul>
           <li>
             4/9 – 4/15
@@ -149,7 +254,7 @@
               </li>
               <li>
                 Implement smooth falloff – intermediate smoothing to make the
-                cels less harsh ⚠️
+                cels less harsh  ✅
               </li>
               <li>Specular and rim lighting ✅</li>
               <li>Outlining ✅</li>
@@ -162,15 +267,15 @@
                 4/25 milestone: Cel shading complete, only working on stretch
                 goals
               </li>
-              <li>Revised: support user interactivity ⚠️</li>
+              <li>Revised: support user interactivity  ✅</li>
               <li>
                 Stretch goals
                 <ul>
-                  <li>Weighted outlining ⚠️</li>
+                  <li>Weighted outlining ✅</li>
                   <li>
-                    Can also add bump mapping for making detail visible 🧗
+                    Can also add bump mapping for making detail visible ⚠️ ✅ (used built in)
                   </li>
-                  <li>Add clickable pre-sets 🧗</li>
+                  <li>Add clickable pre-sets ✅ </li>
                 </ul>
               </li>
             </ul>
@@ -184,83 +289,13 @@
           </li>
         </ul>
         <br />
-
-        <br />
-        <div align="middle">
-          <div>
-            <img src="images/shadey.png" align="middle" width="500px" />
-          </div>
-        </div>
-        <div align="middle">
-          <div>
-            <img src="images/shadier.png" align="middle" width="500px" />
-          </div>
-        </div>
-        <br />
-      </div>
-      <div id="technical-approach">
-        <h3>Technical Approach</h3>
-
-        <p>
-          Our project goal is to build a non photorealistic cell shader, also
-          known as toon shading. So far, we’ve been able to meet a majority of
-          our timeline goals. We’ve implemented a basic cell shader with
-          directional and ambient lighting, rim lighting, specular highlighting,
-          and one of our stretch goals to support outlining with various
-          thickness levels. Our next tasks mainly surround supporting user
-          interactivity.
-        </p>
-        <br />
-      </div>
-      <div id="results">
-        <h3 id="Results">Results</h3>
-
-        <p>
-          Our project goal is to build a non photorealistic cell shader, also
-          known as toon shading. So far, we’ve been able to meet a majority of
-          our timeline goals. We’ve implemented a basic cell shader with
-          directional and ambient lighting, rim lighting, specular highlighting,
-          and one of our stretch goals to support outlining with various
-          thickness levels. Our next tasks mainly surround supporting user
-          interactivity.
-        </p>
-        <br />
-      </div>
-      <div id="references">
-        <h3>References</h3>
-        Basic Cel Shading:
-        <ul>
-          <li>https://roystan.net/articles/toon-shader/</li>
-          <li>https://threejs.org/docs/#api/en/materials/ShaderMaterial</li>
-          <li>https://threejs.org/examples/#webgl_materials_variations_toon</li>
-        </ul>
-
-        Outlining:
-        <ul>
-          <li>https://stemkoski.github.io/Three.js/Outline.html</li>
-          <li>https://jsfiddle.net/9rvb0snk/3/</li>
-          <li>https://gist.github.com/eevee/9cf655e617859d2765f7</li>
-        </ul>
-
-        Bump Mapping:
-        <ul>
-          tba
-        </ul>
-
-        Shadows:
-        <ul>
-          tba
-        </ul>
-
-        <br />
-      </div>
-      <div id="contributions">
-        <h3>Contributions</h3>
-        <p>
-          Our project was conceptualized as a team and we all collaborated on
-          writing the contents of each report, as well as finding and sharing
-          resources to produce our final results.
-        </p>
+    <div id="contributions">
+      <h3>Contributions</h3>
+      <p>
+        Our project was conceptualized as a team and we all collaborated on
+        writing the contents of each report, as well as finding and sharing
+        resources to produce our final results.
+      </p>
         <br />
         <ul>
           <li>
