@@ -86,7 +86,28 @@
         <div align="middle">
           <div>
             <img src="images/cellshade.png" align="middle" width="500px" />
-            <figcaption align="middle">basic cell shader</figcaption>
+            <figcaption align="middle">Basic cel shader</figcaption>
+          </div>
+        </div>
+        <br />
+        <p>
+          To implement receiving shadows, we enabled shadowmaps in the renderer 
+          and set the directional light to cast shadows. Each object then had to 
+          be set to both receive and cast shadows. Three.js has built-in utilities 
+          for shadows that we then included in our vert and frag shaders, which let 
+          us use the array <code class="code-inline">directionalLightShadows</code> 
+          and the function <code class="code-inline">getShadow</code>. 
+          Within our frag shader, we used <code class="code-inline">getShadow</code> 
+          to generate a <code class="code-inline">shadow</code> float based on the 
+          directional light's generated shadowmaps. This float was factored into 
+          the `lightIntensity` calculations to make sure areas receiving shadows 
+          would be appropriately darkened.
+        </p>
+        <br />
+        <div align="middle">
+          <div>
+            <img src="images/shadow_2.JPG" align="middle" width="400px" />
+              <figcaption align="middle">Sphere receiving torus shadow</figcaption>
           </div>
         </div>
         <br />
@@ -125,6 +146,13 @@
           an added color constant. The final GUI allows the user to view the
           rendered objects with different numbers of light bands.
         </p>
+        <br />
+        <div align="middle">
+          <div>
+            <img src="images/banding.gif" align="middle" width="600px" />
+              <figcaption align="middle">Banding with 1 to 4 bands</figcaption>
+          </div>
+        </div>
         <br />
         <p>
           To produce the custom preset for the Hades shader, we first identified
@@ -181,6 +209,13 @@
         <h3 id="Results">Results</h3>
         <p>[LIGHTING MODEL]</p>
 
+        <div align="middle">
+          <div>
+            <img src="images/lighting_model.gif" align="middle" width="600px" />
+              <figcaption align="middle">Demo of our lighting model</figcaption>
+          </div>
+        </div>
+        <br />
         <p>[HADES SHADER]</p>
         <br />
         <table style="width: 100%">
