@@ -27,37 +27,22 @@
       <p>Shannon Bonet, Ace Chen, Isabel Li, Bailey Segall</p>
       <br />
       <div id="abstract">
-        <p>
-          <a
-            href="https://docs.google.com/presentation/d/1tN7WW3td5jyG8JyDsfbgTRyBoYFrbBv1d4iYFc1_9OI/edit?usp=sharing"
-            >Link to Slides ↗️
-          </a>
-        </p>
+        <p>insert video here when done!</p>
         <br />
         <h3>Abstract</h3>
         <p>
-          Our project goal is to build a non photorealistic cell shader, also
-          known as toon shading. So far, we’ve been able to meet a majority of
-          our timeline goals. We’ve implemented a basic cell shader with
-          directional and ambient lighting, rim lighting, specular highlighting,
-          and one of our stretch goals to support outlining with various
-          thickness levels. Our next tasks mainly surround supporting user
-          interactivity.
+          Over the course of this project, we built a web-based non-photo
+          realistic cel ("toon") shader with an interactive interface for
+          varying core parameters. Using Three.js, we implemented a basic cel
+          shader with diffuse lighting, ambient lighting, rim lighting, and
+          specular highlighting. We reached some of our stretch goals, including
+          to to support outlining with various thickness levels, producing a
+          custom shader preset in the style of the <i>Hades</i> video game, and
+          exploring bump mapping in three.js.
         </p>
 
         <br />
-        <!-- <div align="middle">
-          <div>
-            <img src="images/shadey.png" align="middle" width="500px" />
-          </div>
-        </div>
-        <div align="middle">
-          <div>
-            <img src="images/shadier.png" align="middle" width="500px" />
-          </div>
-        </div>
-        <br />
-      </div> -->
+      </div>
       <div id="technical-approach">
         <h3>Technical Approach</h3>
         <p>
@@ -68,13 +53,18 @@
           torus knots, and cylinders using a custom vertex shader to set
           position and fragment shader for color with our own
           <code class="code-inline">.vert</code> and
-          <code class="code-inline">.frag</code> files.
+          <code class="code-inline">.frag</code> files. We used dat.GUI to
+          produce an interactive control panel for the objects, mostly passing
+          in constants to vary the different lighting components from the
+          frontend using uniforms (global GLSL variables).
         </p>
         <br />
-         <p>
-          We calculated directional lighting by first taking the dot product of
-          a surface normal and the direction of light at a given point. Next, we
-          used a
+        <p>
+          Our shader was inspired by the Phong shader we previously implemented
+          in this class, with ambient, diffuse, and specular lighting
+          components. We calculated directional lighting by first taking the dot
+          product of a surface normal and the direction of light at a given
+          point. Next, we used a
           <a href="https://thebookofshaders.com/glossary/?search=smoothstep"
             >smoothstep</a
           >
@@ -107,7 +97,10 @@
           it behind the other objects. We then scaled the y coordinate of both
           the original shape and the outline shape by the same scale factor to
           ensure the outline would not render below the ‘floor’ aka when
-          <code class="code-inline">z=0</code>.
+          <code class="code-inline">z=0</code>. While the references below used
+          the same technique for outlining, we were able to take this one step
+          further by integrating the stroke size into the interactive controls
+          and allow the user to designate the outline width.
         </p>
         <br />
         <table style="width: 100%">
@@ -125,30 +118,106 @@
         </table>
         <br />
         <p>
-          These values such as degree of thickness are currently hardcoded in
-          our shaders and the support of differing values is tested by changing
-          the code. We are able to pass in constants to vary the different
-          lighting components from the frontend using uniforms (global GLSL
-          variables). Our next step is to build out the GUI so these values can
-          be interacted with by the user in an intuitive way which does not
-          require altering the code.
+          We were able to explore light banding effects by adding cut-offs at
+          different intensities of the diffuse light component, and multiplying
+          each by a constant. We also explored color banding effects by also
+          modifying the directional light color at each of these cut-offs with
+          an added color constant. The final GUI allows the user to view the
+          rendered objects with different numbers of light bands.
         </p>
+        <br />
+        <p>
+          To produce the custom preset for the Hades shader, we first identified
+          what we thought to be the most iconic effects of the shader style:
+          minimal banding, black shadows, a creative color accent, as well as
+          eye-catching specular and rim effects. We then modified the existing
+          shader to produce these effects. We built the black shadows by
+          removing ambient light from the fragment shader, and then creating
+          cut-offs for the diffuse lighting component to produce a thin band of
+          a bright creative accent. The rim and specular effects could be
+          achieved with our existing shader model. This implementation was
+          entirely from our own creativity and inspecting
+          <a
+            href="https://cdnb.artstation.com/p/assets/images/images/036/090/791/large/paige-carter-paigecarter-13-nyx.jpg?1616693493"
+            >reference images of Hades</a
+          >. We chose to add this stretch goal because it was a fun rendering
+          style which we felt personally inspired by.
+        </p>
+        <br />
+        <p>
+          Some problems we encountered included initially setting up the dat.GUI
+          controls to connect the parameters on the panel with the rendered
+          output, since we were generally unfamiliar with the library and unsure
+          how to make sure the rendered output would update automatically after
+          changing the parameters. There were also some bugs introduced and
+          uncovered once we added more objects to the scene, such as realising
+          the directional light's shadow camera wasn't large enough to capture
+          all the objects' shadows (and subsequently left them cut out of the
+          scene) or some general mistakes in our code managing multiple objects.
+          We were able to debug by looking at documentation or forums to do with
+          Three.js and dat.GUI, or by inspecting other codebases which had also
+          used these technologies in their work.
+        </p>
+        <br />
+        <p>
+          Our primary learnings were in implementing a shader for web and
+          learning Three.js from scratch. Initially we weren't even certain
+          which library or framework would be the most appropriate for our
+          web-based cel shader, and also explored React Three Fiber. Over time,
+          we were able to identify how to translate the work we learned in class
+          into Three.js shaders, as well as set up a scene and objects. We also
+          learnt the difference between using WebGL with Three.js to build a
+          shader and using Three.js's post-processing for more creative effects.
+          We also learnt how to create interactive controls with dat.GUI without
+          prior experience. Overall, we became more comfortable with this new
+          framework for web-based shaders, and also gained a better
+          understanding of implementing toon shading and shaders as a whole.
+        </p>
+        <br />
+
         <br />
       </div>
       <div id="results">
         <h3 id="Results">Results</h3>
+        <p>[LIGHTING MODEL]</p>
+
+        <p>[HADES SHADER]</p>
+        <br />
+        <table style="width: 100%">
+          <!-- <figcaption align="center"> <code class='code-inline'> CBspheres.dae</code> </figcaption> -->
+          <tr align="center">
+            <td>
+              <img src="images/hades_red.png" align="middle" width="400px" />
+            </td>
+            <td>
+              <img src="images/hades_red2.png" align="middle" width="400px" />
+            </td>
+          </tr>
+        </table>
+
+        <table style="width: 100%">
+          <!-- <figcaption align="center"> <code class='code-inline'> CBspheres.dae</code> </figcaption> -->
+          <tr align="center">
+            <td>
+              <img src="images/hades_blue.png" align="middle" width="400px" />
+            </td>
+            <td>
+              <img src="images/hades_blue2.png" align="middle" width="400px" />
+            </td>
+          </tr>
+        </table>
+        <figcaption align="middle">
+          our Hades-style shader verses the official game art style
+        </figcaption>
+        <br />
+
         <p>
-          [LIGHTING MODEL]
-        </p>
-        <p>
-          [HADES SHADER]        
-        </p>
-        <p>
-          We had some time to attempt an implemention bump mapping, one of our stretch 
-          goals. We didn’t have enough time to experiment with a custom implementation. 
-          Instead, we ended up testing out Three’s build in <code class='code-inline'>MeshToonShader</code>
-          to use its <code class='code-inline'>bumpMap</code> property to see what the effects 
-          of a texture look like. 
+          We had some time to attempt an implemention bump mapping, one of our
+          stretch goals. We didn’t have enough time to experiment with a custom
+          implementation. Instead, we ended up testing out Three’s build in
+          <code class="code-inline">MeshToonShader</code> to use its
+          <code class="code-inline">bumpMap</code> property to see what the
+          effects of a texture look like.
         </p>
         <br />
         <div align="middle">
@@ -164,8 +233,9 @@
           <figcaption align="middle">scale 0.005</figcaption>
         </div>
         <p>
-          The `bumpScale` property allows us to change the density of the applied texture. 
-          Lower scale values result in sparser pattern, and gives a smoother cartonoonish appearance. 
+          The `bumpScale` property allows us to change the density of the
+          applied texture. Lower scale values result in sparser pattern, and
+          gives a smoother cartonoonish appearance.
         </p>
         <br />
       </div>
@@ -173,52 +243,52 @@
         <h3>References</h3>
         Basic Cel Shading:
         <ul>
-          <li>      
+          <li>
             <a href="https://roystan.net/articles/toon-shader"
-             >Toon Shader ↗️ 
+              >Toon Shader ↗️
             </a>
           </li>
-          <li>      
+          <li>
             <a href="https://threejs.org/docs/#api/en/materials/ShaderMaterial"
-             >Shader Material Docs ↗️ 
+              >Shader Material Docs ↗️
             </a>
           </li>
-          <li>      
-            <a href="https://threejs.org/examples/#webgl_materials_variations_toon"
-             >Material Variations ↗️ 
+          <li>
+            <a
+              href="https://threejs.org/examples/#webgl_materials_variations_toon"
+              >Material Variations ↗️
             </a>
           </li>
         </ul>
 
         Outlining:
         <ul>
-          <li>      
+          <li>
             <a href="https://stemkoski.github.io/Three.js/Outline.html"
-             >Outlining in Three.js ↗️ 
+              >Outlining in Three.js ↗️
             </a>
           </li>
-          <li>      
-            <a href="https://jsfiddle.net/9rvb0snk/3/"
-             >Example ↗️ 
-            </a>
+          <li>
+            <a href="https://jsfiddle.net/9rvb0snk/3/">Example ↗️ </a>
           </li>
-          <li>      
+          <li>
             <a href="https://gist.github.com/eevee/9cf655e617859d2765f7"
-             >Outline Shader ↗️ 
+              >Outline Shader ↗️
             </a>
           </li>
         </ul>
 
         Bump Mapping:
         <ul>
-          <li>      
+          <li>
             <a href="https://sbcode.net/threejs/bumpmap/"
-             >Bump Mapping docs ↗️ 
+              >Bump Mapping docs ↗️
             </a>
           </li>
-          <li>      
-            <a href="https://discoverthreejs.com/book/first-steps/textures-intro/"
-             >Brief Intro ↗️ 
+          <li>
+            <a
+              href="https://discoverthreejs.com/book/first-steps/textures-intro/"
+              >Brief Intro ↗️
             </a>
           </li>
         </ul>
@@ -230,72 +300,73 @@
 
         <br />
       </div>
-        <h3 id="Revised Timeline">Timeline Results</h3>
-        <ul>
-          <li>
-            4/9 – 4/15
-            <ul>
-              <li>Set up web framework (Three.js or React) ✅</li>
-              <li>
-                Implement custom shader ✅
-                <ul>
-                  <li>Lighting model ✅</li>
-                  <li>Diffuse + Blinn Phong Shading ✅</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li>
-            4/16 – 4/22
-            <ul>
-              <li>
-                Implement cel-shading – essentially specify
-                <b>cutoff point</b>on dot product value✅
-              </li>
-              <li>
-                Implement smooth falloff – intermediate smoothing to make the
-                cels less harsh  ✅
-              </li>
-              <li>Specular and rim lighting ✅</li>
-              <li>Outlining ✅</li>
-            </ul>
-          </li>
-          <li>
-            4/23 – 4/29
-            <ul>
-              <li>
-                4/25 milestone: Cel shading complete, only working on stretch
-                goals
-              </li>
-              <li>Revised: support user interactivity  ✅</li>
-              <li>
-                Stretch goals
-                <ul>
-                  <li>Weighted outlining ✅</li>
-                  <li>
-                    Can also add bump mapping for making detail visible ⚠️ ✅ (used built in)
-                  </li>
-                  <li>Add clickable pre-sets ✅ </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li>
-            4/30 – 5/3 Presentation, 5/4 Final Deliverable
-            <ul>
-              <li>Write up</li>
-              <li>Video</li>
-            </ul>
-          </li>
-        </ul>
-        <br />
-    <div id="contributions">
-      <h3>Contributions</h3>
-      <p>
-        Our project was conceptualized as a team and we all collaborated on
-        writing the contents of each report, as well as finding and sharing
-        resources to produce our final results.
-      </p>
+      <h3 id="Revised Timeline">Timeline Results</h3>
+      <ul>
+        <li>
+          4/9 – 4/15
+          <ul>
+            <li>Set up web framework (Three.js or React) ✅</li>
+            <li>
+              Implement custom shader ✅
+              <ul>
+                <li>Lighting model ✅</li>
+                <li>Diffuse + Blinn Phong Shading ✅</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          4/16 – 4/22
+          <ul>
+            <li>
+              Implement cel-shading – essentially specify
+              <b>cutoff point</b>on dot product value✅
+            </li>
+            <li>
+              Implement smooth falloff – intermediate smoothing to make the cels
+              less harsh ✅
+            </li>
+            <li>Specular and rim lighting ✅</li>
+            <li>Outlining ✅</li>
+          </ul>
+        </li>
+        <li>
+          4/23 – 4/29
+          <ul>
+            <li>
+              4/25 milestone: Cel shading complete, only working on stretch
+              goals
+            </li>
+            <li>Revised: support user interactivity ✅</li>
+            <li>
+              Stretch goals
+              <ul>
+                <li>Weighted outlining ✅</li>
+                <li>
+                  Can also add bump mapping for making detail visible ⚠️ ✅
+                  (used built in)
+                </li>
+                <li>Add clickable pre-sets ✅</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          4/30 – 5/3 Presentation, 5/4 Final Deliverable
+          <ul>
+            <li>Write up</li>
+            <li>Video</li>
+          </ul>
+        </li>
+      </ul>
+      <br />
+      <div id="contributions">
+        <h3>Contributions</h3>
+        <p>
+          Our project was conceptualized as a team and we all collaborated on
+          writing the contents of each report, as well as finding and sharing
+          resources to produce our final results.
+        </p>
         <br />
         <ul>
           <li>
@@ -799,6 +870,7 @@
       .nav a {
         padding-left: 20px;
       }
+
       b {
         font-family: 'AvenirNext-Medium';
       }
